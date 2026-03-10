@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+
+# Prisma
+prisma/dev.db
+prisma/migrations/**/shadow.db
+
+# Logs
+logs/
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
