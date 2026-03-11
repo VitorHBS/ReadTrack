@@ -2,6 +2,7 @@ import express, {urlencoded} from "express";
 import helmet from "helmet";
 import cors from 'cors';
 import { mainRouter } from "./routers/mainRouter.js";
+import "dotenv/config"
 
 const server = express();
 
