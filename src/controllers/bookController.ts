@@ -31,3 +31,28 @@ export async function allBooks(req:Request, res: Response) {
 
     return res.status(200).json(result);
 }
+
+/*  -------------------------- Exclusão -------------------------- */
+
+export async function deleteBook(req:Request, res: Response) {
+    
+    const { id } = req.params;
+
+
+
+    const result = await bookService.deleteBook(String(id));
+
+    return res.status(200).json(result);
+
+}
+
+
+/*  -------------------------- Atualização -------------------------- */
+
+export async function updateBook(req:Request, res: Response) {
+    const { id } = req.params;
+
+    const { data } = req.body
+
+    const result = await bookService.updateBook(String(id), data)
+}
