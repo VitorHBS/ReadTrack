@@ -1,0 +1,18 @@
+# ReadTrack 📚
+
+API REST para gerenciamento de leitura de livros.
+
+## Tecnologias
+Node
+Express
+TypeScript
+Prisma
+PostgreSQL
+Zod validation
+Pagination
+Error middleware
+
+## Instalação
+
+```bash
+npm install

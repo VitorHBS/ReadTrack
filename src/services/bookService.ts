@@ -1,21 +1,26 @@
-import type { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "../libs/prisma.js";
+import type { bookInput } from "../schemas/bookSchema.js";
 
 
 /*  -------------------------- Criação -------------------------- */
 
-export const createBook = async (data: Prisma.BookCreateInput) => {
-    const bookData = {
-        title: data.title,
-        author: data.author,
-        pages: data.pages,
-        status: data.status,
-        rating: data.rating ?? null
-    }
-
-    const result = await prisma.book.create({
-        data: bookData
+export const createBook = async (data: bookInput) => {
+    return prisma.book.create({
+        data: {
+            title: data.title,
+            author: data.author,
+            pages: data.pages,
+            status: data.status,
+            rating: data.rating ?? null
+        }
     })
+}
 
-    return result
+
+/*  -------------------------- Listagem -------------------------- */
+
+export const allBooks = async() => {
+
+    return prisma.book.findMany();
+    
 }

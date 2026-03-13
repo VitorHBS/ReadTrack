@@ -1,10 +1,33 @@
 import type { Request, Response } from "express";
 import * as bookService from "../services/bookService.js";
+import * as bkSchema from "../schemas/bookSchema.js"
+
 
 
 /*  -------------------------- Criação -------------------------- */
 
-export async function createBook(req:Request, res:Response) {
-    const book = await bookService.createBook(req.body);
-    return res.status(201).json(book);
+export async function createBook(req: Request, res: Response) {
+
+    const result = bkSchema.bookSchema.safeParse(req.body)
+
+    if (!result.success) {
+        return res.status(400).json(result.error)
+    }
+
+    const data = result.data;
+
+    const newBook = await bookService.createBook(data);
+
+    return res.status(201).json(newBook);
+}
+
+
+/*  -------------------------- Listagem -------------------------- */
+
+
+export async function allBooks(req:Request, res: Response) {
+
+    const result = await bookService.allBooks()
+
+    return res.status(200).json(result);
 }

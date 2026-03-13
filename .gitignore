@@ -4,23 +4,37 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# TypeScript
-dist/
-*.tsbuildinfo
-
 # Environment
 .env
-
-# Prisma
-prisma/dev.db
-prisma/migrations/**/shadow.db
+.env.local
+.env.development
+.env.production
 
 # Logs
 logs/
 *.log
 
-# Sistema
+# Build (TypeScript)
+dist/
+build/
+*.tsbuildinfo
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+prisma/migrations/**/shadow.db
+
+# Prisma Client gerado
+src/generated/
+
+# Sistema operacional
 .DS_Store
 Thumbs.db
 
-/src/generated/prisma
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Coverage
+coverage/

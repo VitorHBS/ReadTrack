@@ -14,12 +14,11 @@ datasource db {
 }
 
 model Book {
-  id String @id @default(uuid())
-  title String 
-  author String
-  pages Int
-  status String
-  rating Int?
+  id        String   @id @default(uuid())
+  title     String
+  author    String
+  pages     Int
+  status    String
+  rating    Int?
   createdAt DateTime @default(now())
 }
-

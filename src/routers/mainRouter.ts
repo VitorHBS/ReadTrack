@@ -1,5 +1,5 @@
 import Router from "express";
-import { createBook } from "../controllers/bookController.js";
+import { allBooks, createBook } from "../controllers/bookController.js";
 
 export const mainRouter = Router();
 
@@ -9,3 +9,6 @@ mainRouter.get("/ping", (req, res) =>{
 
 
 mainRouter.post("/book", createBook);
+
+
+mainRouter.get("/books", allBooks);
