@@ -27,8 +27,10 @@ export async function createBook(req: Request, res: Response) {
 
 export async function allBooks(req:Request, res: Response) {
 
-    const result = await bookService.allBooks()
+    const page = Number (req.query.page) || 1;
+    const limit = Number (req.query.limit) || 10;
 
+    const result = await bookService.allBooks(page, limit);
     return res.status(200).json(result);
 }
 
@@ -38,7 +40,9 @@ export async function deleteBook(req:Request, res: Response) {
     
     const { id } = req.params;
 
-
+    if (!id) {
+        return res.status(400).json({message: "Id is required"})
+    }
 
     const result = await bookService.deleteBook(String(id));
 
@@ -52,7 +56,23 @@ export async function deleteBook(req:Request, res: Response) {
 export async function updateBook(req:Request, res: Response) {
     const { id } = req.params;
 
-    const { data } = req.body
+    if (!id) {
+        return res.status(400).json({message: "Id is required"})
+    }
 
-    const result = await bookService.updateBook(String(id), data)
+    const parseResult =  bkSchema.bookSchema.safeParse(req.body)
+
+    if(!parseResult.success){
+        return res.status(400).json(parseResult.error)
+    }
+
+    const  result  = parseResult.data
+
+    const updateBook = await bookService.updateBook(String(id), result);
+
+    if(!updateBook){
+        return res.status(404).json({message: "Book not found"})
+    }
+
+    return res.status(200).json(updateBook)
 }
