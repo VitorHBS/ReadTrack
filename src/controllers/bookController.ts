@@ -9,6 +9,8 @@ import * as bkSchema from "../schemas/bookSchema.js"
 export async function createBook(req: Request, res: Response) {
 
     const result = bkSchema.bookSchema.safeParse(req.body)
+    //mudar para req.user.id quando criar o token do JWT
+    const userId = req.body.id
 
     if (!result.success) {
         return res.status(400).json(result.error)
@@ -16,9 +18,16 @@ export async function createBook(req: Request, res: Response) {
 
     const data = result.data;
 
-    const newBook = await bookService.createBook(data);
+    const newBook = await bookService.createBook(data, userId);
 
     return res.status(201).json(newBook);
+}
+
+export async function createUser(req: Request, res: Response)  {
+    
+        const {email, password} = req.body;
+
+    
 }
 
 

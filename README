@@ -1,18 +1,34 @@
 # ReadTrack 📚
 
-API REST para gerenciamento de leitura de livros.
+API REST para gerenciamento de leitura de livros, permitindo que usuários acompanhem seus livros, status de leitura e progresso.
 
-## Tecnologias
-Node
-Express
-TypeScript
-Prisma
-PostgreSQL
-Zod validation
-Pagination
-Error middleware
+---
 
-## Instalação
+## 🚀 Funcionalidades
+
+- Cadastro e autenticação de usuários (JWT)
+- CRUD de livros
+- Marcar status (lendo, concluído, abandonado)
+- Paginação de resultados
+- Validação de dados com Zod
+- Tratamento global de erros
+
+---
+
+## 🛠️ Tecnologias
+
+- Node.js
+- Express
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Zod
+
+---
+
+## 📦 Instalação
 
 ```bash
+git clone https://github.com/VitorHBS/ReadTrack.git
+cd readtrack
 npm install
