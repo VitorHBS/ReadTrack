@@ -23,12 +23,6 @@ export async function createBook(req: Request, res: Response) {
     return res.status(201).json(newBook);
 }
 
-export async function createUser(req: Request, res: Response)  {
-    
-        const {email, password} = req.body;
-
-    
-}
 
 
 /*  -------------------------- Listagem -------------------------- */

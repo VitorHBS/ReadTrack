@@ -1,10 +1,16 @@
 import type { Request, Response } from "express";
 
-/*listar usuários
-
-pegar perfil do usuário logado
-
-atualizar usuário
-
-deletar usuário*/
-
+/**
+ * USER CONTROLLER
+ *
+ * Responsável por requisições relacionadas ao usuário.
+ *
+ * O que colocar aqui:
+ * - Buscar usuário logado
+ * - Atualizar dados
+ * - Listar usuários (se necessário)
+ *
+ * O que NÃO colocar:
+ * - Lógica de autenticação
+ * - Regras complexas
+ */
