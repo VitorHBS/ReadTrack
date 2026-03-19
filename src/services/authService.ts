@@ -21,6 +21,7 @@ import { createUser } from "../services/userService.js";
 import { prisma } from "../libs/prisma.js";
 import type { userInput } from "../schemas/userSchema.js";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config()
 
@@ -45,4 +46,35 @@ export const register = async (data: userInput) => {
     )
 
     return { id: newUser.id, token }
+}
+
+
+export const login = async (data: userInput) => {
+
+    
+
+    const user = await prisma.user.findUnique({
+        where: {
+            email: data.email,
+        }
+    })
+
+    if (!user) {
+        throw new Error("Credenciais inválidas antes do decoded");
+    }
+
+    const passwordMatch = await bcrypt.compare(data.password, user.password);
+
+    if(!passwordMatch){
+        throw new Error("Credenciais inválidas bcrypt")
+    }
+
+    const token = JWT.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET_KEY as string,
+        { expiresIn: "2h" }
+    )
+
+    return { token }
+
 }

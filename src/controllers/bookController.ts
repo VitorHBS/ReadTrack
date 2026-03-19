@@ -9,8 +9,8 @@ import * as bkSchema from "../schemas/bookSchema.js"
 export async function createBook(req: Request, res: Response) {
 
     const result = bkSchema.bookSchema.safeParse(req.body)
-    //mudar para req.user.id quando criar o token do JWT
-    const userId = req.body.id
+
+    const userId = (req as any).user.id
 
     if (!result.success) {
         return res.status(400).json(result.error)
@@ -28,10 +28,10 @@ export async function createBook(req: Request, res: Response) {
 /*  -------------------------- Listagem -------------------------- */
 
 
-export async function allBooks(req:Request, res: Response) {
+export async function allBooks(req: Request, res: Response) {
 
-    const page = Number (req.query.page) || 1;
-    const limit = Number (req.query.limit) || 10;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
 
     const result = await bookService.allBooks(page, limit);
     return res.status(200).json(result);
@@ -39,15 +39,16 @@ export async function allBooks(req:Request, res: Response) {
 
 /*  -------------------------- Exclusão -------------------------- */
 
-export async function deleteBook(req:Request, res: Response) {
-    
+export async function deleteBook(req: Request, res: Response) {
+
     const { id } = req.params;
+    const userId = (req as any).user.id
 
     if (!id) {
-        return res.status(400).json({message: "Id is required"})
+        return res.status(400).json({ message: "Id is required" })
     }
 
-    const result = await bookService.deleteBook(String(id));
+    const result = await bookService.deleteBook(String(id), userId);
 
     return res.status(200).json(result);
 
@@ -56,26 +57,30 @@ export async function deleteBook(req:Request, res: Response) {
 
 /*  -------------------------- Atualização -------------------------- */
 
-export async function updateBook(req:Request, res: Response) {
+export async function updateBook(req: Request, res: Response) {
     const { id } = req.params;
+    const userID = (req as any).user.id;
 
     if (!id) {
-        return res.status(400).json({message: "Id is required"})
+        return res.status(400).json({ message: "Id is required" })
     }
 
-    const parseResult =  bkSchema.bookSchema.safeParse(req.body)
+    const parseResult = bkSchema.bookUpdateSchema.safeParse(req.body)
 
-    if(!parseResult.success){
+    if (!parseResult.success) {
         return res.status(400).json(parseResult.error)
     }
 
-    const  result  = parseResult.data
+    try {
+        const updateBook = await bookService.updateBook(String(id), parseResult.data, userID);
+        return res.status(200).json(updateBook)
 
-    const updateBook = await bookService.updateBook(String(id), result);
-
-    if(!updateBook){
-        return res.status(404).json({message: "Book not found"})
+    } catch (err) {
+        if (err instanceof Error) {
+            return res.status(403).json({ error: err.message })
+        }
+        return res.status(500).json({ error: "Erro desconhecido" });
     }
 
-    return res.status(200).json(updateBook)
+
 }

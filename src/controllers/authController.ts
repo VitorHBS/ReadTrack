@@ -35,3 +35,22 @@ export const register = async (req: Request, res: Response) => {
 
     }
 }
+
+
+export const login = async (req: Request, res: Response) => {
+
+    try {
+        const result = await authService.login(req.body)
+        return res.status(200).json(result);
+    } catch (err) {
+        if (err instanceof Error) {
+            return res.status(400).json({
+                error: err.message || "Erro ao logar Usuário"
+            });
+        }
+    }
+
+    return res.status(500).json({
+        error: "Erro desconhecido"
+    });
+}

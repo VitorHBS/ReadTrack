@@ -1,6 +1,6 @@
 import { prisma } from "../libs/prisma.js";
-import type { bookInput } from "../schemas/bookSchema.js";
-import type  {userInput} from "../schemas/userSchema.js";
+import type { bookInput, bookUpdateInput } from "../schemas/bookSchema.js";
+
 
 
 /**
@@ -66,14 +66,25 @@ export const allBooks = async (page: number, limit: number) => {
 
 /*  -------------------------- Exclusão -------------------------- */
 
-export const deleteBook = async (bookId: string) => {
-    const Book = await prisma.book.delete({
-        where: {
-            id: bookId
-        }
+export const deleteBook = async (bookId: string, userId: number) => {
+
+    //achando o livro
+    const book = await prisma.book.findUnique({
+        where: { id: bookId }
     })
 
-    return Book
+    // livro n existe
+    if (!book) {
+        throw new Error("Livro não encontrado")
+    }
+
+    // outro usuário tentando excluir
+    if (book.userId !== userId) {
+        throw new Error("Não Autorizado")
+    }
+
+    return prisma.book.delete({ where: { id: bookId } })
+
 }
 
 
@@ -81,15 +92,25 @@ export const deleteBook = async (bookId: string) => {
 
 /*  -------------------------- Atualização -------------------------- */
 
-export const updateBook = async (bookId: string, data: bookInput) => {
-    const Book = await prisma.book.update({
+export const updateBook = async (bookId: string, data: bookUpdateInput, userId: number) => {
+
+    //achando livro
+    const book = await prisma.book.findUnique({
+        where: { id: bookId }
+    });
+
+    // livro n existe
+    if (!book) {
+        throw new Error("Livro não encontrado");
+    };
+
+    // outro usuário tentando atualizar
+    if (book.userId !== userId) {
+        throw new Error("Não Autorizado")
+    };
+
+    return prisma.book.update({
         where: { id: bookId },
-        data: {
-            ...data,
-            rating: data.rating ?? null
-        }
-
-    })
-
-    return Book
+        data: { ...data, rating: data.rating ?? null }
+    });
 }
