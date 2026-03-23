@@ -2,6 +2,7 @@ import {Router} from "express";
 import { allBooks, createBook, deleteBook, updateBook } from "../controllers/bookController.js";
 import { login, register } from "../controllers/authController.js";
 import {Auth} from "../middlewares/authMiddleware.js"
+import { deleteUser, getAllUser } from "../controllers/userController.js";
 
 export const mainRouter = Router();
 
@@ -22,3 +23,9 @@ mainRouter.patch("/book/:id", Auth.private, updateBook)
 mainRouter.post("/auth/register", register);
 
 mainRouter.post("/auth/login", login);
+
+// USER
+
+mainRouter.get("/users", getAllUser);
+
+mainRouter.delete("/user/:id", deleteUser);

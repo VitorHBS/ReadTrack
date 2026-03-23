@@ -38,9 +38,19 @@ export const createUser = async (data: userInput) => {
 
 /*  -------------------------- Listagem -------------------------- */
 
-
+export const getAllUser = async () => {
+    return await prisma.user.findMany()
+}
 
 /*  -------------------------- Exclusão -------------------------- */
 
+export const deleteUser = async (userId: number) => {
+    return await prisma.user.delete({
+        where: {
+            id: userId
+        } 
+    })
+}
 
 /*  -------------------------- Atualização -------------------------- */
+
