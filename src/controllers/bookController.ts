@@ -59,7 +59,7 @@ export async function deleteBook(req: Request, res: Response) {
 
 export async function updateBook(req: Request, res: Response) {
     const { id } = req.params;
-    const userID = (req as any).user.id;
+    const userID = req.user?.id;
 
     if (!id) {
         return res.status(400).json({ message: "Id is required" })
@@ -72,7 +72,7 @@ export async function updateBook(req: Request, res: Response) {
     }
 
     try {
-        const updateBook = await bookService.updateBook(String(id), parseResult.data, userID);
+        const updateBook = await bookService.updateBook(String(id), parseResult.data, Number(userID));
         return res.status(200).json(updateBook)
 
     } catch (err) {

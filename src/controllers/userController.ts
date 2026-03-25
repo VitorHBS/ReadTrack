@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import * as userService from "../services/userService.js";
 import * as userSchema from "../schemas/userSchema.js"
 
+
 /**
  * USER CONTROLLER
  *
@@ -37,18 +38,49 @@ export async function getAllUser(req: Request, res: Response) {
 export async function deleteUser(req: Request, res: Response) {
 
     const { id } = req.params;
+    const tokenUserId = req.user?.id;
 
     if (!id || isNaN(Number(id))) {
         return res.status(400).json({ message: "ID inválido !" })
+    }
+
+    if (tokenUserId !== Number(id)) {
+        return res.status(400).json({ message: "Você não tem permissão para fazer isso" })
     }
 
     try {
         await userService.deleteUser(Number(id));
         return res.status(204).send();
     } catch (err) {
-        return res.status(404).json({ message: "Usuário não encotrado" })
+        if (err instanceof Error) {
+            return res.status(404).json({ error: err.message })
+        }
+        return res.status(500).json({ error: "Erro desconhecido" });
     }
 }
 
 
 /*  -------------------------- Atualização -------------------------- */
+
+export async function updateUser(req: Request, res: Response) {
+    const { id } = req.params;
+    const tokenUserId = req.user?.id
+
+    if (!id || isNaN(Number(id))) {
+        return res.status(400).json({ message: "ID inválido" });
+    }
+
+    if (tokenUserId !== Number(id)) {
+        return res.status(400).json({ message: "Você não tem permissão para fazer isso" });
+    }
+
+    try {
+        const updated = await userService.updateUser(req.body, Number(id));
+        return res.status(200).json(updated)
+    } catch (err) {
+        if (err instanceof Error) {
+            return res.status(403).json({ error: err.message })
+        }
+        return res.status(500).json({ error: "Erro desconhecido" });
+    }
+}

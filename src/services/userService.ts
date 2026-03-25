@@ -1,5 +1,5 @@
 import { prisma } from "../libs/prisma.js";
-import type  {userInput} from "../schemas/userSchema.js";
+import type { userInput } from "../schemas/userSchema.js";
 import bcrypt from "bcrypt"
 
 
@@ -45,12 +45,42 @@ export const getAllUser = async () => {
 /*  -------------------------- Exclusão -------------------------- */
 
 export const deleteUser = async (userId: number) => {
+
+
+    const user = prisma.user.findUnique({ where: { id: userId}})
+
+
+    if(!user){
+        throw new Error("Usuário não existe")
+    }
+
     return await prisma.user.delete({
         where: {
             id: userId
-        } 
+        }
     })
 }
 
 /*  -------------------------- Atualização -------------------------- */
 
+export const updateUser = async (data: userInput, userId: number) => {
+
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    })
+
+    if (!user) {
+        throw new Error("Usuário não existe")
+    }
+
+        return await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                email: data.email,
+                password: data.password,
+                name: data.name
+            }
+        })
+}
