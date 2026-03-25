@@ -10,7 +10,7 @@ export async function createBook(req: Request, res: Response) {
 
     const result = bkSchema.bookSchema.safeParse(req.body)
 
-    const userId = (req as any).user.id
+    const userId = req.user?.id
 
     if (!result.success) {
         return res.status(400).json(result.error)
@@ -18,9 +18,18 @@ export async function createBook(req: Request, res: Response) {
 
     const data = result.data;
 
-    const newBook = await bookService.createBook(data, userId);
+    try {
+        const newBook = await bookService.createBook(data, Number(userId));
+        return res.status(201).json(newBook);
 
-    return res.status(201).json(newBook);
+    } catch (err) {
+        if (err instanceof Error) {
+            if (err instanceof Error) {
+                return res.status(403).json({ error: err.message })
+            }
+            return res.status(500).json({ error: "Erro desconhecido" });
+        }
+    }
 }
 
 
@@ -37,22 +46,38 @@ export async function allBooks(req: Request, res: Response) {
     return res.status(200).json(result);
 }
 
+export async function bookPerUser(req: Request, res: Response) {
+
+    const { id } = req.params
+
+    const result = await bookService.bookPerUser(Number(id))
+
+    return res.status(200).json(result);
+}
+
 /*  -------------------------- Exclusão -------------------------- */
 
 export async function deleteBook(req: Request, res: Response) {
 
     const { id } = req.params;
-    const userId = (req as any).user.id
+    const userId = req.user?.id
 
     if (!id) {
         return res.status(400).json({ message: "Id is required" })
     }
 
-    const result = await bookService.deleteBook(String(id), userId);
+    try {
+        const result = await bookService.deleteBook(String(id), Number(userId));
+        return res.status(200).json(result);
 
-    return res.status(200).json(result);
-
+    } catch (err) {
+        if (err instanceof Error) {
+            return res.status(403).json({ error: err.message })
+        }
+        return res.status(500).json({ error: "Erro desconhecido" });
+    }
 }
+
 
 
 /*  -------------------------- Atualização -------------------------- */

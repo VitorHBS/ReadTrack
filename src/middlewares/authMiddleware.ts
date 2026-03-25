@@ -10,7 +10,7 @@ export const Auth = {
     private: async (req: Request, res: Response, next: NextFunction) => {
 
         if (!req.headers.authorization) {
-            return res.status(401).json({ error: "Roken não fornecido" })
+            return res.status(401).json({ error: "Token não fornecido" })
         }
 
         const [authType, token] = req.headers.authorization.split(" ");

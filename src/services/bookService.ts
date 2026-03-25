@@ -64,6 +64,15 @@ export const allBooks = async (page: number, limit: number) => {
 }
 
 
+export const bookPerUser = async (userId: number) => {
+    return await prisma.book.findMany({
+        where: {
+            userId : userId 
+        }
+    })
+}
+
+
 /*  -------------------------- Exclusão -------------------------- */
 
 export const deleteBook = async (bookId: string, userId: number) => {

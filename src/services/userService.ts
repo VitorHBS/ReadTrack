@@ -61,13 +61,7 @@ export const deleteUser = async (userId: number) => {
 
 export const updateUser = async (data: userInput, userId: number) => {
 
-    const user = await prisma.user.findUnique({
-        where: { id: userId }
-    })
-
-    if (!user) {
-        throw new Error("Usuário não existe")
-    }
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
         return await prisma.user.update({
             where: {
@@ -75,7 +69,7 @@ export const updateUser = async (data: userInput, userId: number) => {
             },
             data: {
                 email: data.email,
-                password: data.password,
+                password: hashedPassword,
                 name: data.name
             }
         })

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { allBooks, createBook, deleteBook, updateBook } from "../controllers/bookController.js";
+import { allBooks, bookPerUser, createBook, deleteBook, updateBook } from "../controllers/bookController.js";
 import { login, register } from "../controllers/authController.js";
 import {Auth} from "../middlewares/authMiddleware.js"
 import { deleteUser, getAllUser, updateUser } from "../controllers/userController.js";
@@ -12,6 +12,8 @@ export const mainRouter = Router();
 mainRouter.post("/book", Auth.private, createBook);
 
 mainRouter.get("/books", allBooks);
+
+mainRouter.get("/books/user/:id", bookPerUser);
 
 mainRouter.delete("/book/:id", Auth.private, deleteBook);
 

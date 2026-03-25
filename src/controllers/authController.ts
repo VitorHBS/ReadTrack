@@ -19,6 +19,9 @@ import type { Response, Request } from "express";
 import * as authService from "../services/authService.js";
 
 export const register = async (req: Request, res: Response) => {
+
+     //adicionar schema para verificar req.body
+
     try {
         const result = await authService.register(req.body);
         return res.status(201).json(result)
@@ -38,6 +41,8 @@ export const register = async (req: Request, res: Response) => {
 
 
 export const login = async (req: Request, res: Response) => {
+
+    //adicionar schema para verificar req.body
 
     try {
         const result = await authService.login(req.body)
