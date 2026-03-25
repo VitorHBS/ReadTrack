@@ -42,17 +42,13 @@ export const getAllUser = async () => {
     return await prisma.user.findMany()
 }
 
+export const findById = async (userId: number) => {
+    return await prisma.user.findUnique({ where: { id: userId } });
+}
+
 /*  -------------------------- Exclusão -------------------------- */
 
 export const deleteUser = async (userId: number) => {
-
-
-    const user = prisma.user.findUnique({ where: { id: userId}})
-
-
-    if(!user){
-        throw new Error("Usuário não existe")
-    }
 
     return await prisma.user.delete({
         where: {

@@ -44,16 +44,22 @@ export async function deleteUser(req: Request, res: Response) {
         return res.status(400).json({ message: "ID inválido !" })
     }
 
-    if (tokenUserId !== Number(id)) {
-        return res.status(400).json({ message: "Você não tem permissão para fazer isso" })
-    }
-
     try {
+        const user = await userService.findById(Number(id))
+
+        if (!user) {
+            return res.status(404).json({ message: "Usuário não encontrado" });
+        }
+
+        if (tokenUserId !== Number(id)) {
+            return res.status(403).json({ message: "Você não tem permissão para fazer isso" })
+        }
+
         await userService.deleteUser(Number(id));
         return res.status(204).send();
     } catch (err) {
         if (err instanceof Error) {
-            return res.status(404).json({ error: err.message })
+            return res.status(500).json({ error: err.message })
         }
         return res.status(500).json({ error: "Erro desconhecido" });
     }

@@ -28,6 +28,6 @@ mainRouter.post("/auth/login", login);
 
 mainRouter.get("/users", getAllUser);
 
-mainRouter.delete("/user/:id", deleteUser);
+mainRouter.delete("/user/:id", Auth.private, deleteUser);
 
 mainRouter.patch("/user/:id", Auth.private, updateUser)
