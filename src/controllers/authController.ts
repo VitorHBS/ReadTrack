@@ -17,13 +17,18 @@
 
 import type { Response, Request } from "express";
 import * as authService from "../services/authService.js";
+import * as userSchema from "../schemas/userSchema.js";
 
 export const register = async (req: Request, res: Response) => {
 
-     //adicionar schema para verificar req.body
+    const parseBodyLogin = userSchema.userSchema.safeParse(req.body)
+
+    if (!parseBodyLogin.success) {
+        return res.status(400).json(parseBodyLogin.error)
+    }
 
     try {
-        const result = await authService.register(req.body);
+        const result = await authService.register(parseBodyLogin.data);
         return res.status(201).json(result)
     } catch (err) {
         if (err instanceof Error) {
@@ -42,10 +47,15 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
 
-    //adicionar schema para verificar req.body
+    const parseBodyLogin = userSchema.userSchema.safeParse(req.body)
+
+    if (!parseBodyLogin.success) {
+        return res.status(400).json(parseBodyLogin.error)
+    }
+
 
     try {
-        const result = await authService.login(req.body)
+        const result = await authService.login(parseBodyLogin.data)
         return res.status(200).json(result);
     } catch (err) {
         if (err instanceof Error) {

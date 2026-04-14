@@ -1,3 +1,4 @@
+import { promises } from "node:dns";
 import { prisma } from "../libs/prisma.js";
 import type { bookInput, bookUpdateInput } from "../schemas/bookSchema.js";
 
@@ -64,14 +65,31 @@ export const allBooks = async (page: number, limit: number) => {
 }
 
 
-export const bookPerUser = async (userId: number) => {
-    return await prisma.book.findMany({
-        where: {
-            userId : userId 
-        }
-    })
-}
+export const bookPerUser = async (userId: number, page: number, limit: number) => {
 
+    const skip = (page - 1) * limit
+
+    const [books, total] = await Promise.all([
+        prisma.book.findMany({
+            where: {userId: userId},
+            skip,
+            take: limit,
+            orderBy: {
+                createdAt: "asc"
+            }
+        }),
+        prisma.book.count({where: {userId: userId}})
+    ])
+
+    return {
+        data: books,
+        total,
+        page,
+        totalPage: Math.ceil(total / limit),
+        userId
+    }
+
+}
 
 /*  -------------------------- Exclusão -------------------------- */
 

@@ -13,7 +13,7 @@ mainRouter.post("/book", Auth.private, createBook);
 
 mainRouter.get("/books", allBooks);
 
-mainRouter.get("/books/user/:id", bookPerUser);
+mainRouter.get("/users/:id/books", Auth.private, bookPerUser);
 
 mainRouter.delete("/book/:id", Auth.private, deleteBook);
 

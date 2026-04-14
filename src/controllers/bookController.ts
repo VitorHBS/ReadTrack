@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import * as bookService from "../services/bookService.js";
-import * as bkSchema from "../schemas/bookSchema.js"
+import * as bkSchema from "../schemas/bookSchema.js";
+import * as userService from "../services/userService.js";
 
 
 
@@ -46,13 +47,42 @@ export async function allBooks(req: Request, res: Response) {
     return res.status(200).json(result);
 }
 
+
 export async function bookPerUser(req: Request, res: Response) {
 
-    const { id } = req.params
+    const { id } = req.params;
+    const tokenUserId = req.user?.id;
 
-    const result = await bookService.bookPerUser(Number(id))
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
 
-    return res.status(200).json(result);
+    try {
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido" })
+        }
+
+        const user = await userService.findById(Number(id));
+
+        if (!user) {
+            return res.status(404).json({ message: "Usuário não existe" })
+        }
+
+        if (tokenUserId !== Number(id)) {
+            return res.status(403).json({ message: "Não tem permissão para realizar essa ação" })
+        }
+
+        const result = await bookService.bookPerUser(Number(id), page, limit)
+
+        return res.status(200).json(result);
+
+    } catch (err) {
+        if (err instanceof Error) {
+            return res.status(500).json({ error: err.message })
+        }
+    }
+
+    return res.status(500).json({ error: "Erro desconhecido" })
 }
 
 /*  -------------------------- Exclusão -------------------------- */
