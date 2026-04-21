@@ -76,6 +76,14 @@ export async function updateUser(req: Request, res: Response) {
         return res.status(400).json({ message: "ID inválido" });
     }
 
+    const safeBody = userSchema.userSchema.safeParse(req.body);
+
+    if(!safeBody.success){
+        return res.status(400).json({error: "Dados inválidos"})
+    }
+    
+    const bodyData = safeBody.data;
+
     try {
 
         const user = await userService.findById(Number(id));
@@ -88,7 +96,7 @@ export async function updateUser(req: Request, res: Response) {
             return res.status(403).json({ message: "Você não tem permissão para fazer isso" });
         }
 
-        const updated = await userService.updateUser(req.body, Number(id));
+        const updated = await userService.updateUser(bodyData, Number(id));
         return res.status(200).json(updated)
         
     } catch (err) {

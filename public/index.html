@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- 🔝 NAVBAR -->
+  <header>
+    <h1>📚 Book Tracker</h1>
+    <nav>
+      <a id="nav-list">Listar Livros</a>
+      <a id="nav-add">Adicionar Livro</a>
+    </nav>
+  </header>
+
+  <div class="container">
+
+    <!-- 📚 LISTA DE LIVROS -->
+    <section id="section-list">
+      <h2>Lista de Livros</h2>
+      <button id="btn-load">Atualizar</button>
+
+      <ul id="bookList">
+        <!-- JS vai inserir os livros aqui -->
+      </ul>
+
+      <div id="pagination">
+        <button id="prev">Anterior</button>
+        <span id="page-info">Página 1</span>
+        <button id="next">Próximo</button>
+      </div>
+    </section>
+
+    <!-- ➕ FORMULÁRIO -->
+    <section id="section-add" class="hidden">
+      <h2>Adicionar Livro</h2>
+
+      <input id="title" placeholder="Título" />
+      <input id="author" placeholder="Autor" />
+      <input id="pages" type="number" placeholder="Páginas" />
+
+      <select id="status">
+        <option value="PLANNED">Para ler</option>
+        <option value="READING">Lendo</option>
+        <option value="COMPLETE">Lido</option>
+      </select>
+
+      <input id="rating" type="number" step="0.5" placeholder="Nota (opcional)" />
+
+      <button id="btn-add">Adicionar</button>
+    </section>
+
+
+    <script src="./script.js"></script>
+</body>
+</html>

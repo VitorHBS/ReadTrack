@@ -85,7 +85,7 @@ export const bookPerUser = async (userId: number, page: number, limit: number) =
         data: books,
         total,
         page,
-        totalPage: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit),
         userId
     }
 
