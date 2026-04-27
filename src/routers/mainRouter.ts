@@ -11,7 +11,7 @@ export const mainRouter = Router();
 
 mainRouter.post("/book", Auth.private, createBook);
 
-mainRouter.get("/books", allBooks);
+mainRouter.get("/books", Auth.private, allBooks);
 
 mainRouter.get("/users/:id/books", Auth.private, bookPerUser);
 

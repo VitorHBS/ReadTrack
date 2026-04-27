@@ -20,16 +20,18 @@ const navLogout = document.getElementById("nav-logout")
 const btnShowLogin = document.getElementById("show-login");
 const loginSection = document.getElementById("login-section");
 const btnLogin = document.getElementById("btn-login")
-const inputEmail = document.getElementById("login-email");
-const inputPassword = document.getElementById("login-password");
+const inputLoginEmail = document.getElementById("login-email");
+const inputLoginPassword = document.getElementById("login-password");
 
 // Seção de register
-
-const btnRegister = document.getElementById("show-register");
+const btnShowRegister = document.getElementById("show-register");
 const registerSection = document.getElementById("register-section");
+const btnRegister = document.getElementById("btn-register");
+const inputRegisterEmail = document.getElementById("register-email");
+const inputRegisterPassword = document.getElementById("register-password");
+const inputRegisterName = document.getElementById("register-name");
 
 // Páginas do HTML
-
 const authSection = document.getElementById("auth-section");
 const appSection = document.getElementById("app-section");
 
@@ -40,7 +42,20 @@ let totalPages = 1;
 
 // -------------------  FUNCTIONS ----------------------------
 async function carregarLivros() {
-    const response = await fetch(`/books?page=${currentPage}&limit=${limit}`);
+    const response = await fetch(`/books?page=${currentPage}&limit=${limit}`, {
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) {
+            logout(); // Token expirou
+        }
+        alert("Erro ao carregar livros");
+        return;
+    }
+
     const result = await response.json();
 
     lista.innerHTML = "";
@@ -86,6 +101,7 @@ function tokenRefresh() {
     if (token) {
         appSection.classList.remove("hidden");
         authSection.classList.add("hidden");
+        carregarLivros();
     } else {
         appSection.classList.add("hidden");
         authSection.classList.remove("hidden");
@@ -96,7 +112,33 @@ function tokenRefresh() {
 function logout() {
     localStorage.removeItem("token");
     tokenRefresh();
+
+    lista.innerHTML = "";
+    currentPage = 1
+
+    inputLoginEmail.value = "";
+    inputLoginPassword.value = "";
+
+    inputRegisterEmail.value = ""
+    inputRegisterPassword.value = ""
+    inputRegisterName.value = ""
+
+    registerSection.classList.add("hidden");
+    loginSection.classList.remove("hidden");
+    btnShowRegister.classList.remove("active");
+    btnShowLogin.classList.add("active");
 }
+
+function showNotification(message, type = "error") {
+    const notif = document.createElement("div");
+    notif.className = `notification notification-${type}`;
+    notif.textContent = message;
+    document.body.appendChild(notif);
+
+    setTimeout(() => notif.remove(), 3000);
+}
+
+
 
 // ------------------- EVENTS ----------------------------
 
@@ -143,41 +185,99 @@ btnShowLogin.addEventListener("click", () => {
     registerSection.classList.add("hidden");
     loginSection.classList.remove("hidden");
 
-    btnRegister.classList.remove("active");
+    btnShowRegister.classList.remove("active");
     btnShowLogin.classList.add("active");
 })
 
-btnRegister.addEventListener("click", () => {
+btnShowRegister.addEventListener("click", () => {
     loginSection.classList.add("hidden");
     registerSection.classList.remove("hidden");
 
     btnShowLogin.classList.remove("active");
-    btnRegister.classList.add("active");
+    btnShowRegister.classList.add("active");
 })
 
 
 btnLogin.addEventListener("click", async () => {
-    const email = inputEmail.value;
-    const password = inputPassword.value;
+    const email = inputLoginEmail.value;
+    const password = inputLoginPassword.value;
 
-    const response = await fetch("/auth/login",
-        {
+    if (!email || !password) {
+        showNotification("Preencha todos os campos", "error");
+        return
+    }
+
+    try {
+        const response = await fetch("/auth/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email: email, password: password })
+            });
+
+        if (response.ok) {
+
+            const result = await response.json();
+            const token = result.token
+            localStorage.setItem("token", token)
+
+            showNotification("Login realizado com sucesso!", "success");
+
+            inputLoginEmail.value = "";
+            inputLoginPassword.value = "";
+
+            tokenRefresh()
+
+        } else {
+            const erro = await response.json();
+            console.log("Erro:", erro);
+            showNotification("Email ou senha incorretos", "error");
+        }
+    } catch (err) {
+        showNotification("Erro de conexão. Tente novamente.", "error");
+    }
+})
+
+btnRegister.addEventListener("click", async () => {
+    const email = inputRegisterEmail.value;
+    const password = inputRegisterPassword.value;
+    const name = inputRegisterName.value;
+
+    if (!email || !password) {
+        showNotification("Preencha o campo do Email e Senha", "error");
+        return
+    }
+
+    try {
+        const response = await fetch("/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email: email, password: password })
+            body: JSON.stringify({ email: email, password: password, name: name, })
         });
 
-    if (response.ok) {
-        const result = await response.json();
-        const token = result.token
-        localStorage.setItem("token", token)
+        if (response.ok) {
+            const result = await response.json();
+            const token = result.token;
+            localStorage.setItem("token", token);
 
-        appSection.classList.remove("hidden");
-        authSection.classList.add("hidden");
+            inputRegisterEmail.value = ""
+            inputRegisterPassword.value = ""
+            inputRegisterName.value = ""
 
+            tokenRefresh()
+        } else {
+            const erro = await response.json();
+            console.log("Erro:", erro);
+            showNotification("Email ou senha inválidos", "error");
+        }
+    } catch (err) {
+        showNotification("Erro de conexão. Tente novamente.", "error");
     }
+
 })
 
 navLogout.addEventListener("click", logout);
@@ -185,6 +285,5 @@ navLogout.addEventListener("click", logout);
 
 // ------------------- INIT ----------------------------
 
-carregarLivros()
 
 
