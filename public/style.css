@@ -300,6 +300,54 @@ select {
   }
 }
 
+.book-item{
+  display: flex;
+  justify-content: space-between;
+}
+
+.book-actions {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.book-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.btn-edit {
+  background-color: #3b82f6;
+}
+
+.btn-edit:hover {
+  background-color: #2563eb;
+}
+
+.btn-delete {
+  background-color: #ef4444;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+
+
 /* NOTIFICATIONS */
 .notification {
   position: fixed;
