@@ -12,6 +12,12 @@ const btnPrev = document.getElementById("prev");
 // Adicionar
 const navAdd = document.getElementById("nav-add");
 const sectionAdd = document.getElementById("section-add");
+const btnAddBook = document.getElementById("btn-add");
+const inputBookTitle = document.getElementById("title");
+const inputBookAuthor = document.getElementById("author");
+const inputBookPages = document.getElementById("pages");
+const selectBookStatus = document.getElementById("status");
+const inputBookRating = document.getElementById("rating");
 
 //logout
 const navLogout = document.getElementById("nav-logout")
@@ -138,7 +144,55 @@ function showNotification(message, type = "error") {
     setTimeout(() => notif.remove(), 3000);
 }
 
+async function addBook() {
 
+    const title = inputBookTitle.value;
+    const author = inputBookAuthor.value;
+    const pages = Number(inputBookPages.value);
+    const status = selectBookStatus.value;
+    const rating = inputBookRating.value ? Number(inputBookRating) : null;
+
+    if (!title || !author || !pages || !status) {
+        showNotification("Preencha todos os campos", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch("/book", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+                title: title, author: author, pages: pages, status: status, rating: rating
+            })
+        })
+
+        console.log(response.status)
+
+        if (!response.ok) {
+            if (response.status === 401) /*token expirour*/ {
+                logout()
+            }
+            console.log(response.status)
+            showNotification("Error ao adicionar livro", "error")
+            return
+        }
+
+        inputBookTitle.value = "";
+        inputBookAuthor.value = "";
+        inputBookPages.value = "";
+        selectBookStatus.value = "";
+        inputBookRating.value = "";
+
+        carregarLivros()
+        showNotification("Livro adicionado com sucesso", "success")
+
+    } catch (err) {
+        showNotification("Erro de conexão!", "error")
+    }
+}
 
 // ------------------- EVENTS ----------------------------
 
@@ -179,6 +233,8 @@ navAdd.addEventListener("click", () => {
     sectionList.classList.add("hidden");
     currentPage = 1
 })
+
+btnAddBook.addEventListener("click", addBook);
 
 
 btnShowLogin.addEventListener("click", () => {
