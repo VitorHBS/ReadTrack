@@ -41,6 +41,16 @@ const inputRegisterName = document.getElementById("register-name");
 const authSection = document.getElementById("auth-section");
 const appSection = document.getElementById("app-section");
 
+//Modal 
+const modalEdit = document.getElementById("modalEdit")
+const inputModalBookTitle = document.getElementById("modalTitle");
+const inputModalBookAuthor = document.getElementById("modalAuthor");
+const inputModalBookPages = document.getElementById("modalPages");
+const selectModalBookStatus = document.getElementById("modalStatus");
+const inputModalBookRating = document.getElementById("modalRating");
+
+let allBooks = []
+
 // -------------------  STATE ----------------------------
 let currentPage = 1;
 const limit = 5;
@@ -63,6 +73,7 @@ async function carregarLivros() {
     }
 
     const result = await response.json();
+    allBooks = result.data
 
     lista.innerHTML = "";
 
@@ -387,6 +398,26 @@ lista.addEventListener("click", (e) => {
     }
 })
 
+lista.addEventListener("click", (e) => {
+
+    if (e.target.classList.contains("btn-edit")) {
+
+        const bookId = e.target.getAttribute("data-id");
+
+        for (let i = 0; i < allBooks.length; i++) {
+            if (allBooks[i].id === bookId) {
+                const result = allBooks[i]
+                modalEdit.classList.remove("hidden")
+
+                inputModalBookTitle.value = result.title;
+                inputModalBookAuthor.value = result.author;
+                inputModalBookPages.value = result.pages;
+                selectModalBookStatus.value = result.status
+                inputModalBookRating.value = result.rating
+            }
+        }
+    }
+})
 
 // ------------------- INIT ----------------------------
 
