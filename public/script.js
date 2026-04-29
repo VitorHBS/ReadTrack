@@ -42,14 +42,18 @@ const authSection = document.getElementById("auth-section");
 const appSection = document.getElementById("app-section");
 
 //Modal 
-const modalEdit = document.getElementById("modalEdit")
+const modalEdit = document.getElementById("modalEdit");
+const btnModal = document.getElementById("modalButton");
+const btnModalCancel = document.getElementById("modalButtonCancel");
 const inputModalBookTitle = document.getElementById("modalTitle");
 const inputModalBookAuthor = document.getElementById("modalAuthor");
 const inputModalBookPages = document.getElementById("modalPages");
 const selectModalBookStatus = document.getElementById("modalStatus");
 const inputModalBookRating = document.getElementById("modalRating");
 
-let allBooks = []
+let allBooks = [];
+let modalBookId = "";
+let userId = "";
 
 // -------------------  STATE ----------------------------
 let currentPage = 1;
@@ -58,11 +62,19 @@ let totalPages = 1;
 
 // -------------------  FUNCTIONS ----------------------------
 async function carregarLivros() {
-    const response = await fetch(`/books?page=${currentPage}&limit=${limit}`, {
+
+    if (!userId) {
+        console.warn("userId não está definido");
+        return;
+    }
+
+    const response = await fetch(`/users/${userId}/books?page=${currentPage}&limit=${limit}`, {
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`
         }
     });
+
+    console.log("Carregando livros para userId:", userId);
 
     if (!response.ok) {
         if (response.status === 401) {
@@ -129,6 +141,8 @@ function tokenRefresh() {
     const token = localStorage.getItem("token");
 
     if (token) {
+        userId = getUserIdFromToken(token);
+
         appSection.classList.remove("hidden");
         authSection.classList.add("hidden");
         carregarLivros();
@@ -141,6 +155,7 @@ function tokenRefresh() {
 
 function logout() {
     localStorage.removeItem("token");
+    userId = "";
     tokenRefresh();
 
     lista.innerHTML = "";
@@ -174,7 +189,7 @@ async function addBook() {
     const author = inputBookAuthor.value;
     const pages = Number(inputBookPages.value);
     const status = selectBookStatus.value;
-    const rating = inputBookRating.value ? Number(inputBookRating) : null;
+    const rating = inputBookRating.value ? parseFloat(inputBookRating.value) : null;
 
     if (!title || !author || !pages || !status) {
         showNotification("Preencha todos os campos", "error");
@@ -192,8 +207,6 @@ async function addBook() {
                 title: title, author: author, pages: pages, status: status, rating: rating
             })
         })
-
-        console.log(response.status)
 
         if (!response.ok) {
             if (response.status === 401) /*token expirour*/ {
@@ -244,6 +257,65 @@ async function deleteBook(id) {
     } catch (err) {
         showNotification("Erro de conexão!", "error")
     }
+}
+
+
+async function editBook(modalBookId) {
+
+    const title = inputModalBookTitle.value;
+    const author = inputModalBookAuthor.value;
+    const pages = Number(inputModalBookPages.value);
+    const status = selectModalBookStatus.value;
+    const rating = inputModalBookRating.value ? parseFloat(inputModalBookRating.value) : null;
+
+    if (!title || !author || !pages || !status) {
+        showNotification("Preencha todos os campos", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/book/${modalBookId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            },
+            body: JSON.stringify({ title: title, author: author, pages: pages, status: status, rating: rating })
+        })
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                showNotification("Sessão expirada");
+                logout()
+            }
+            console.log(response.status)
+            showNotification("Erro ao editar livro", "error");
+            return
+        }
+
+        showNotification("Livro atualizado", "success")
+        modalEdit.classList.add("hidden");
+
+        carregarLivros()
+
+    } catch (err) {
+
+    }
+
+}
+
+function getUserIdFromToken(token) {
+    const base64Url = token.split(".")[1];
+
+    // converte base64url -> base64
+    const base64 = base64Url
+        .replace(/-/g, "+")
+        .replace(/_/g, "/")
+        .padEnd(base64Url.length + (4 - base64Url.length % 4) % 4, "=");
+
+    const decoded = JSON.parse(atob(base64));
+
+    return decoded.id;
 }
 
 // ------------------- EVENTS ----------------------------
@@ -328,8 +400,16 @@ btnLogin.addEventListener("click", async () => {
         if (response.ok) {
 
             const result = await response.json();
-            const token = result.token
+
+            const token = result.token;
+            const decodedUserId = getUserIdFromToken(token);
+
+            userId = decodedUserId
+
             localStorage.setItem("token", token)
+            localStorage.setItem("userId", decodedUserId);
+
+            console.log(result)
 
             showNotification("Login realizado com sucesso!", "success");
 
@@ -345,6 +425,7 @@ btnLogin.addEventListener("click", async () => {
         }
     } catch (err) {
         showNotification("Erro de conexão. Tente novamente.", "error");
+        console.log(err)
     }
 })
 
@@ -391,6 +472,7 @@ btnRegister.addEventListener("click", async () => {
 navLogout.addEventListener("click", logout);
 
 
+//botão de deletar livro
 lista.addEventListener("click", (e) => {
     if (e.target.classList.contains("btn-delete")) {
         const bookId = e.target.getAttribute("data-id");
@@ -398,27 +480,37 @@ lista.addEventListener("click", (e) => {
     }
 })
 
+//botao de editar livro
 lista.addEventListener("click", (e) => {
 
-    if (e.target.classList.contains("btn-edit")) {
+    const button = e.target.closest(".btn-edit");
 
-        const bookId = e.target.getAttribute("data-id");
+    if (button) {
+
+        const bookId = button.getAttribute("data-id");
 
         for (let i = 0; i < allBooks.length; i++) {
             if (allBooks[i].id === bookId) {
                 const result = allBooks[i]
                 modalEdit.classList.remove("hidden")
-
+                modalBookId = allBooks[i].id
                 inputModalBookTitle.value = result.title;
                 inputModalBookAuthor.value = result.author;
                 inputModalBookPages.value = result.pages;
                 selectModalBookStatus.value = result.status
                 inputModalBookRating.value = result.rating
             }
+            break
         }
     }
 })
 
+btnModal.addEventListener("click", () => editBook(modalBookId));
+
+
+btnModalCancel.addEventListener("click", () => {
+    modalEdit.classList.add("hidden");
+})
 // ------------------- INIT ----------------------------
 
 

@@ -426,6 +426,21 @@ select {
   transform: translateY(-1px);
 }
 
+.div-btn-modal {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.btn-modal-cancel {
+  background-color: #ef4444;
+}
+
+.btn-modal-cancel:hover {
+  background-color: #dc2626;
+}
+
 
 /* NOTIFICATIONS */
 .notification {
