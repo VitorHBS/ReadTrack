@@ -5,8 +5,16 @@ import { mainRouter } from "./routers/mainRouter.js";
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
+import rateLimit from "express-rate-limit";
+
+let limiter = rateLimit({
+  limit: 3,
+  windowMs: 30000,
+  message: "We have received too many request from this IP, try again after 3 minute"
+})
 
 const server = express();
+server.use("/auth", limiter);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
