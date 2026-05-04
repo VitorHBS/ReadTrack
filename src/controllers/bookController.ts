@@ -2,6 +2,9 @@ import type { Request, Response } from "express";
 import * as bookService from "../services/bookService.js";
 import * as bkSchema from "../schemas/bookSchema.js";
 import * as userService from "../services/userService.js";
+import { AppError } from "../utils/AppError.js";
+import  { asyncHandler } from "../utils/asyncHandler.js";
+import { timeStamp } from "node:console";
 
 
 
@@ -48,42 +51,34 @@ export async function allBooks(req: Request, res: Response) {
 }
 
 
-export async function bookPerUser(req: Request, res: Response) {
+export const bookPerUser = asyncHandler(async (req: Request, res: Response) => {
 
     const { id } = req.params;
     const tokenUserId = req.user?.id;
+    const userId = Number(id)
 
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
 
-    try {
 
-        if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "ID inválido" })
+        if (!id || isNaN(userId)) {
+            throw new AppError("ID inválido", 400)
         }
 
-        const user = await userService.findById(Number(id));
+        const user = await userService.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: "Usuário não existe" })
+           throw new AppError("Usuário não existe", 404)
         }
 
-        if (tokenUserId !== Number(id)) {
-            return res.status(403).json({ message: "Não tem permissão para realizar essa ação" })
+        if (tokenUserId !== userId) {
+            throw new AppError("Não tem permissão para realizar essa ação", 403)
         }
 
-        const result = await bookService.bookPerUser(Number(id), page, limit)
+        const result = await bookService.bookPerUser(userId, page, limit)
 
-        return res.status(200).json(result);
-
-    } catch (err) {
-        if (err instanceof Error) {
-            return res.status(500).json({ error: err.message })
-        }
-    }
-
-    return res.status(500).json({ error: "Erro desconhecido" })
-}
+        return res.status(200).json(result); 
+})
 
 /*  -------------------------- Exclusão -------------------------- */
 

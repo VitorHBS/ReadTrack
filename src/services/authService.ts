@@ -22,8 +22,29 @@ import { prisma } from "../libs/prisma.js";
 import type { userInput } from "../schemas/userSchema.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from 'uuid'
 
 dotenv.config()
+
+const refreshToken: Record<string, string> = {}
+
+
+export const generateRefreshToken = async (userId: string) => {
+    
+    const token = uuidv4();
+    refreshToken[token] = userId;
+
+    Object.keys(refreshToken).forEach(t => {
+        if(t !== token && refreshToken[t] == userId){
+            delete refreshToken[t]
+        }
+    })
+
+    setTimeout(() => delete refreshToken[token], parseInt(process.env.REFRESH_EXPIRES as string));
+    return token
+}
+
+
 
 export const register = async (data: userInput) => {
 
@@ -75,6 +96,10 @@ export const login = async (data: userInput) => {
         { expiresIn: "2h" }
     )
 
-    return { token }
+    const refreshToken = await generateRefreshToken(user.id.toString())
+
+    console.log(token, refreshToken)
+
+    return { token, refreshToken }
 
 }

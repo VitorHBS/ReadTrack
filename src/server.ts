@@ -6,6 +6,7 @@ import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 let limiter = rateLimit({
   limit: 3,
@@ -28,6 +29,8 @@ server.use(express.json());
 server.use(express.static(path.join(__dirname, "../public")));
 
 server.use(mainRouter);
+
+server.use(errorHandler)
 
 const port = process.env.PORT || 3000;
 

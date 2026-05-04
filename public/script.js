@@ -457,6 +457,8 @@ btnRegister.addEventListener("click", async () => {
             inputRegisterPassword.value = ""
             inputRegisterName.value = ""
 
+            showNotification("Cadastrado com sucesso", "success")
+
             tokenRefresh()
         } else {
             const erro = await response.json();
