@@ -1,71 +1,34 @@
-/**
- * AUTH CONTROLLER
- *
- * Responsável por lidar com requisições HTTP relacionadas à autenticação.
- *
- * O que colocar aqui:
- * - Receber req (request)
- * - Validar dados (opcional, com Zod)
- * - Chamar o authService
- * - Retornar res (response)
- *
- * O que NÃO colocar:
- * - Lógica de negócio
- * - Acesso direto ao banco
- * - Regras de autenticação (JWT, etc)
- */
-
 import type { Response, Request } from "express";
 import * as authService from "../services/authService.js";
 import * as userSchema from "../schemas/userSchema.js";
+import { AppError } from "../utils/AppError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const register = async (req: Request, res: Response) => {
+export const register = asyncHandler(async(req: Request, res: Response) => {
+
+    const parseBodyRegister = userSchema.userSchema.safeParse(req.body)
+
+    if (!parseBodyRegister.success) {
+        throw new AppError("Dados inválidos", 400)
+    }
+
+    const result = await authService.register(parseBodyRegister.data);
+
+    return res.status(201).json(result)
+})
+
+
+export const login = asyncHandler(async(req: Request, res: Response) => {
 
     const parseBodyLogin = userSchema.userSchema.safeParse(req.body)
 
     if (!parseBodyLogin.success) {
-        return res.status(400).json(parseBodyLogin.error)
+        throw new AppError("Dados inválidos", 400)
     }
 
-    try {
-        const result = await authService.register(parseBodyLogin.data);
-        return res.status(201).json(result)
-    } catch (err) {
-        if (err instanceof Error) {
-            return res.status(400).json({
-                error: err.message || "Erro ao registrar Usuário"
-            });
-        }
+    const result = await authService.login(parseBodyLogin.data)
 
-        return res.status(400).json({
-            error: "Erro desconhecido"
-        });
+    return res.status(200).json(result);
 
-    }
-}
+})
 
-
-export const login = async (req: Request, res: Response) => {
-
-    const parseBodyLogin = userSchema.userSchema.safeParse(req.body)
-
-    if (!parseBodyLogin.success) {
-        return res.status(400).json(parseBodyLogin.error)
-    }
-
-
-    try {
-        const result = await authService.login(parseBodyLogin.data)
-        return res.status(200).json(result);
-    } catch (err) {
-        if (err instanceof Error) {
-            return res.status(400).json({
-                error: err.message || "Erro ao logar Usuário"
-            });
-        }
-    }
-
-    return res.status(500).json({
-        error: "Erro desconhecido"
-    });
-}

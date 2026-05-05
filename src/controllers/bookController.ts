@@ -3,52 +3,43 @@ import * as bookService from "../services/bookService.js";
 import * as bkSchema from "../schemas/bookSchema.js";
 import * as userService from "../services/userService.js";
 import { AppError } from "../utils/AppError.js";
-import  { asyncHandler } from "../utils/asyncHandler.js";
-import { timeStamp } from "node:console";
-
-
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 /*  -------------------------- Criação -------------------------- */
 
-export async function createBook(req: Request, res: Response) {
+export const createBook = asyncHandler(async(req: Request, res: Response) => {
 
     const result = bkSchema.bookSchema.safeParse(req.body)
 
     const userId = req.user?.id
 
+    if (!userId) {
+        throw new AppError("ID is required", 400)
+    }
+
     if (!result.success) {
-        return res.status(400).json(result.error)
+        throw new AppError("Dados inválidos", 400)
     }
 
     const data = result.data;
 
-    try {
-        const newBook = await bookService.createBook(data, Number(userId));
-        return res.status(201).json(newBook);
-
-    } catch (err) {
-        if (err instanceof Error) {
-            if (err instanceof Error) {
-                return res.status(403).json({ error: err.message })
-            }
-            return res.status(500).json({ error: "Erro desconhecido" });
-        }
-    }
-}
+    const newBook = await bookService.createBook(data, Number(userId));
+    return res.status(201).json(newBook);
+})
 
 
 
 /*  -------------------------- Listagem -------------------------- */
 
 
-export async function allBooks(req: Request, res: Response) {
+export const allBooks = asyncHandler(async(req: Request, res: Response) => {
 
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
 
     const result = await bookService.allBooks(page, limit);
     return res.status(200).json(result);
-}
+});
 
 
 export const bookPerUser = asyncHandler(async (req: Request, res: Response) => {
@@ -61,76 +52,59 @@ export const bookPerUser = asyncHandler(async (req: Request, res: Response) => {
     const limit = Number(req.query.limit) || 10;
 
 
-        if (!id || isNaN(userId)) {
-            throw new AppError("ID inválido", 400)
-        }
+    if (!id || isNaN(userId)) {
+        throw new AppError("ID inválido", 400)
+    }
 
-        const user = await userService.findById(userId);
+    const user = await userService.findById(userId);
 
-        if (!user) {
-           throw new AppError("Usuário não existe", 404)
-        }
+    if (!user) {
+        throw new AppError("Usuário não existe", 404)
+    }
 
-        if (tokenUserId !== userId) {
-            throw new AppError("Não tem permissão para realizar essa ação", 403)
-        }
+    if (tokenUserId !== userId) {
+        throw new AppError("Não tem permissão para realizar essa ação", 403)
+    }
 
-        const result = await bookService.bookPerUser(userId, page, limit)
+    const result = await bookService.bookPerUser(userId, page, limit)
 
-        return res.status(200).json(result); 
+    return res.status(200).json(result);
 })
 
 /*  -------------------------- Exclusão -------------------------- */
 
-export async function deleteBook(req: Request, res: Response) {
+export const deleteBook = asyncHandler(async(req: Request, res: Response) => {
 
     const { id } = req.params;
     const userId = req.user?.id
 
     if (!id) {
-        return res.status(400).json({ message: "Id is required" })
+        throw new AppError("ID is required", 400)
     }
 
-    try {
-        const result = await bookService.deleteBook(String(id), Number(userId));
-        return res.status(200).json(result);
-
-    } catch (err) {
-        if (err instanceof Error) {
-            return res.status(403).json({ error: err.message })
-        }
-        return res.status(500).json({ error: "Erro desconhecido" });
-    }
-}
+    const result = await bookService.deleteBook(String(id), Number(userId));
+    return res.status(200).json(result);
+});
 
 
 
 /*  -------------------------- Atualização -------------------------- */
 
-export async function updateBook(req: Request, res: Response) {
+export const updateBook = asyncHandler(async(req: Request, res: Response) => {
     const { id } = req.params;
     const userID = req.user?.id;
 
     if (!id) {
-        return res.status(400).json({ message: "Id is required" })
+        throw new AppError("ID is required", 400)
     }
 
     const parseResult = bkSchema.bookUpdateSchema.safeParse(req.body)
 
     if (!parseResult.success) {
-        return res.status(400).json(parseResult.error)
+        throw new AppError("Dados inválidos", 400)
     }
 
-    try {
-        const updateBook = await bookService.updateBook(String(id), parseResult.data, Number(userID));
-        return res.status(200).json(updateBook)
+    const updateBook = await bookService.updateBook(String(id), parseResult.data, Number(userID));
+    return res.status(200).json(updateBook)
+});
 
-    } catch (err) {
-        if (err instanceof Error) {
-            return res.status(403).json({ error: err.message })
-        }
-        return res.status(500).json({ error: "Erro desconhecido" });
-    }
-
-
-}
