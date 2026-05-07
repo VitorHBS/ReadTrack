@@ -51,6 +51,9 @@ const inputModalBookPages = document.getElementById("modalPages");
 const selectModalBookStatus = document.getElementById("modalStatus");
 const inputModalBookRating = document.getElementById("modalRating");
 
+// Input do Filtro
+const filterInput = document.getElementById("filterInput");
+
 let allBooks = [];
 let modalBookId = "";
 let userId = "";
@@ -513,6 +516,9 @@ btnModal.addEventListener("click", () => editBook(modalBookId));
 btnModalCancel.addEventListener("click", () => {
     modalEdit.classList.add("hidden");
 })
+
+
+
 // ------------------- INIT ----------------------------
 
 
