@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { allBooks, bookPerUser, createBook, deleteBook, updateBook } from "../controllers/bookController.js";
+import { allBooks, bookFilter, bookPerUser, createBook, deleteBook, updateBook } from "../controllers/bookController.js";
 import { login, register } from "../controllers/authController.js";
 import {Auth} from "../middlewares/authMiddleware.js"
 import { deleteUser, getAllUser, updateUser } from "../controllers/userController.js";
@@ -18,6 +18,8 @@ mainRouter.get("/users/:id/books", Auth.private, bookPerUser);
 mainRouter.delete("/book/:id", Auth.private, deleteBook);
 
 mainRouter.patch("/book/:id", Auth.private, updateBook)
+
+mainRouter.get("/books/filter", Auth.private, bookFilter)
 
 
 // AUTH

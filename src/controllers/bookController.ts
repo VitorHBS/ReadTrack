@@ -108,3 +108,23 @@ export const updateBook = asyncHandler(async(req: Request, res: Response) => {
     return res.status(200).json(updateBook)
 });
 
+
+
+/*  -------------------------- Filtragem -------------------------- */
+
+export const bookFilter = asyncHandler(async(req: Request, res: Response) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+        throw new AppError("Sem Autorização", 403)
+    }
+
+    const parseResult = bkSchema.bookFilterSchema.safeParse(req.query);
+
+    if(!parseResult.success){
+        throw new AppError("Dados inválidos", 400);
+    }
+
+    const filterBook = await bookService.filterBook(parseResult.data, Number(userId));
+    return res.status(200).json(filterBook);
+});

@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { BookStatus } from "../generated/prisma/enums.js";
 
 export const bookSchema = z.object({
     title: z
@@ -35,3 +36,14 @@ export const bookUpdateSchema = bookSchema.partial();
 
 export type bookInput = z.infer<typeof bookSchema>;
 export type bookUpdateInput = z.infer<typeof bookUpdateSchema>;
+
+
+export const bookFilterSchema = z.object({
+    title: z.string().optional(),
+    author: z.string().trim().optional(),
+    pages: z.coerce.number().int().positive().optional(),
+    status: z.enum(BookStatus).optional(),
+    rating: z.coerce.number().optional()
+})
+
+export type bookFilterSchema = z.infer<typeof bookFilterSchema>;

@@ -1,24 +1,6 @@
-import { promises } from "node:dns";
+import { use } from "react";
 import { prisma } from "../libs/prisma.js";
-import type { bookInput, bookUpdateInput } from "../schemas/bookSchema.js";
-
-
-
-/**
- * BOOK SERVICE
- *
- * Responsável por operações relacionadas aos livros.
- *
- * O que colocar aqui:
- * - Criar livro
- * - Listar livros
- * - Atualizar livro
- * - Deletar livro
- *
- * Observação:
- * - Sempre relacionar com userId
- */
-
+import type { bookFilterSchema, bookInput, bookUpdateInput } from "../schemas/bookSchema.js";
 
 /*  -------------------------- Criação -------------------------- */
 
@@ -71,14 +53,14 @@ export const bookPerUser = async (userId: number, page: number, limit: number) =
 
     const [books, total] = await Promise.all([
         prisma.book.findMany({
-            where: {userId: userId},
+            where: { userId: userId },
             skip,
             take: limit,
             orderBy: {
                 createdAt: "asc"
             }
         }),
-        prisma.book.count({where: {userId: userId}})
+        prisma.book.count({ where: { userId: userId } })
     ])
 
     return {
@@ -141,3 +123,37 @@ export const updateBook = async (bookId: string, data: bookUpdateInput, userId: 
         data: { ...data, rating: data.rating ?? null }
     });
 }
+
+
+/*  -------------------------- Filtragem -------------------------- */
+
+export const filterBook = async (data: bookFilterSchema, userId: number) => {
+
+    return await prisma.book.findMany({
+        where: {
+            userId: userId,
+            ...(data.title && {
+                author: {
+                    contains: data.title,
+                    mode: "insensitive"
+                }
+            }),
+            ...(data.author && {
+                author: {
+                    contains: data.author,
+                    mode: "insensitive"
+                }
+            }),
+            ...(data.pages && {
+                pages: data.pages
+            }),
+            ...(data.status && {
+                status: data.status
+            }),
+            ...(data.rating && {
+                rating: data.rating
+            })
+        }
+    })
+}
+

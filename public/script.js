@@ -100,7 +100,7 @@ async function carregarLivros() {
     result.data.forEach(book => {
         const item = document.createElement("li");
         item.innerHTML = `
-          <div class="book-item">
+          <div id="divBook" class="book-item">
             <div>
                 <h3>${book.title}</h3>
                 <p>Autor: ${book.author}</p>
@@ -518,6 +518,19 @@ btnModalCancel.addEventListener("click", () => {
 })
 
 
+filterInput.addEventListener("input", (e) => {
+    const divBook = document.getElementById("divBook");
+
+    if(filterInput.value !== "") {
+        divBook.classList.add("hidden");
+    } else {
+        carregarLivros()
+    }
+
+    while (filterInput.value !== "") {
+        
+    }
+})
 
 // ------------------- INIT ----------------------------
 
