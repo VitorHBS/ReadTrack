@@ -125,6 +125,9 @@ export const bookFilter = asyncHandler(async(req: Request, res: Response) => {
         throw new AppError("Dados inválidos", 400);
     }
 
-    const filterBook = await bookService.filterBook(parseResult.data, Number(userId));
+    const { search } = parseResult.data;
+
+    const filterBook = await bookService.filterBook(search, Number(userId));
     return res.status(200).json(filterBook);
 });
+

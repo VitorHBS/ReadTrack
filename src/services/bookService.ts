@@ -1,6 +1,6 @@
-import { use } from "react";
 import { prisma } from "../libs/prisma.js";
-import type { bookFilterSchema, bookInput, bookUpdateInput } from "../schemas/bookSchema.js";
+import {type bookFilterSchema, type bookInput, type bookUpdateInput } from "../schemas/bookSchema.js";
+import { Prisma, BookStatus } from "../generated/prisma/client.js"
 
 /*  -------------------------- Criação -------------------------- */
 
@@ -127,33 +127,56 @@ export const updateBook = async (bookId: string, data: bookUpdateInput, userId: 
 
 /*  -------------------------- Filtragem -------------------------- */
 
-export const filterBook = async (data: bookFilterSchema, userId: number) => {
+export const filterBook = async (search: string, userId: number) => {
+
+    const searchNumber = Number(search)
+    const isNumber = !isNaN(searchNumber) && search.trim() !== "";
+
+    const statusValue = search.toUpperCase();
+    const isStatus = Object.values(BookStatus).includes(statusValue as BookStatus);
+
+    const ratingNumber = parseFloat(search);
+    const isFloat = !isNaN(ratingNumber) && search.trim() !== "";
+
+
+    const orConditions: Prisma.BookWhereInput[] = [
+        {
+            title: {
+                contains: search,
+                mode: "insensitive"
+            }
+        },
+        {
+            author: {
+                contains: search,
+                mode: "insensitive"
+            }
+        },
+    ];
+
+    if (isNumber) {
+        orConditions.push({
+            pages: { equals: searchNumber }
+        });
+    }
+
+    if (isStatus) {
+        orConditions.push({
+            status: { equals: statusValue as BookStatus }
+        })
+    }
+
+    if (isFloat) {
+        orConditions.push({
+            rating: {
+                gte: ratingNumber - 0.5,
+                lte: ratingNumber + 0.5
+            }
+        })
+    }
 
     return await prisma.book.findMany({
-        where: {
-            userId: userId,
-            ...(data.title && {
-                author: {
-                    contains: data.title,
-                    mode: "insensitive"
-                }
-            }),
-            ...(data.author && {
-                author: {
-                    contains: data.author,
-                    mode: "insensitive"
-                }
-            }),
-            ...(data.pages && {
-                pages: data.pages
-            }),
-            ...(data.status && {
-                status: data.status
-            }),
-            ...(data.rating && {
-                rating: data.rating
-            })
-        }
+        where: { userId, OR: orConditions }
     })
 }
 

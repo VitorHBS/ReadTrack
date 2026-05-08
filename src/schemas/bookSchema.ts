@@ -39,11 +39,7 @@ export type bookUpdateInput = z.infer<typeof bookUpdateSchema>;
 
 
 export const bookFilterSchema = z.object({
-    title: z.string().optional(),
-    author: z.string().trim().optional(),
-    pages: z.coerce.number().int().positive().optional(),
-    status: z.enum(BookStatus).optional(),
-    rating: z.coerce.number().optional()
+    search: z.string().min(1, "Digite algo para buscar"),
 })
 
 export type bookFilterSchema = z.infer<typeof bookFilterSchema>;

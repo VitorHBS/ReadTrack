@@ -518,18 +518,28 @@ btnModalCancel.addEventListener("click", () => {
 })
 
 
-filterInput.addEventListener("input", (e) => {
+filterInput.addEventListener("input", async (e) => {
     const divBook = document.getElementById("divBook");
+    const search = filterInput.value.trim();
 
-    if(filterInput.value !== "") {
-        divBook.classList.add("hidden");
-    } else {
-        carregarLivros()
+    if (search === "") {
+        divBook.classList.remove("hidden");
+        carregarLivros();
+        return;
     }
 
-    while (filterInput.value !== "") {
-        
-    }
+    divBook.classList.add("hidden");
+
+    const response = await fetch(`/book/filter?search=${encodeURIComponent(search)}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+
+    const books = await response.json();
+
+    carregarLivros(books);
+
 })
 
 // ------------------- INIT ----------------------------
