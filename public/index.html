@@ -4,182 +4,321 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book Tracker</title>
+  <title>Book Tracker - Sua Biblioteca Digital</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
-  <main class="page">
-    <!-- AUTH -->
-    <section id="auth-section" class="auth-shell">
-      <div class="auth-card">
-        <div class="auth-header">
-          <span class="badge">Book Tracker</span>
-          <h1>Entre na sua conta</h1>
-          <p>Faça login ou crie uma conta para acessar sua biblioteca.</p>
+  <!-- AUTH SECTION -->
+  <div id="auth-section" class="auth-section">
+    <!-- Left Side - Hero -->
+    <div class="auth-hero">
+      <div class="hero-content">
+        <div class="hero-badge">📚 Book Tracker</div>
+        <h1 class="hero-title">Sua Biblioteca<br />Digital</h1>
+        <p class="hero-text">Organize, acompanhe e descubra seus livros favoritos em um só lugar.</p>
+        <div class="hero-features">
+          <div class="feature-item">
+            <span class="feature-icon">📖</span>
+            <span>Organize sua biblioteca</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">⭐</span>
+            <span>Avalie seus livros</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">📊</span>
+            <span>Acompanhe leituras</span>
+          </div>
         </div>
-
-        <div class="auth-switch">
-          <button type="button" class="switch-btn active" id="show-login">Login</button>
-          <button type="button" class="switch-btn" id="show-register">Register</button>
-        </div>
-
-        <section id="login-section" class="auth-panel">
-          <label for="login-email">Email</label>
-          <input id="login-email" type="email" placeholder="seuemail@email.com" />
-
-          <label for="login-password">Senha</label>
-          <input id="login-password" type="password" placeholder="Sua senha" />
-
-          <button id="btn-login" class="primary-btn" type="button">Entrar</button>
-        </section>
-
-        <section id="register-section" class="auth-panel hidden">
-          <label for="register-name">Nome</label>
-          <input id="register-name" type="text" placeholder="Seu nome" />
-
-          <label for="register-email">Email</label>
-          <input id="register-email" type="email" placeholder="seuemail@email.com" />
-
-          <label for="register-password">Senha</label>
-          <input id="register-password" type="password" placeholder="Crie uma senha" />
-
-          <button id="btn-register" class="primary-btn" type="button">Cadastrar</button>
-        </section>
       </div>
-    </section>
+    </div>
 
-    <!-- APP -->
-    <section id="app-section" class="app-shell hidden">
-      <header class="app-header">
-        <h1>📚 Book Tracker</h1>
+    <!-- Right Side - Auth Form -->
+    <div class="auth-form-container">
+      <div class="auth-card">
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="show-login" data-tab="login">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3H9a6 6 0 0 0-6 6v12a6 6 0 0 0 6 6h6a6 6 0 0 0 6-6V9a6 6 0 0 0-6-6Z"></path>
+              <path d="M12 16v-4m-2 2h4"></path>
+            </svg>
+            Login
+          </button>
+          <button class="auth-tab" id="show-register" data-tab="register">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+              <path d="M12 12v6m3-3H9"></path>
+            </svg>
+            Cadastro
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-section" class="auth-panel active">
+          <div class="auth-panel-header">
+            <h2>Bem-vindo de volta!</h2>
+            <p>Faça login para acessar sua biblioteca</p>
+          </div>
+
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" placeholder="seu@email.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Senha</label>
+            <input id="login-password" type="password" placeholder="••••••••" />
+          </div>
+
+          <button id="btn-login" class="btn-primary" type="button">
+            <span>Entrar</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-section" class="auth-panel">
+          <div class="auth-panel-header">
+            <h2>Junte-se a nós!</h2>
+            <p>Crie uma conta para começar</p>
+          </div>
+
+          <div class="form-group">
+            <label for="register-name">Nome</label>
+            <input id="register-name" type="text" placeholder="Seu nome completo" />
+          </div>
+
+          <div class="form-group">
+            <label for="register-email">Email</label>
+            <input id="register-email" type="email" placeholder="seu@email.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="register-password">Senha</label>
+            <input id="register-password" type="password" placeholder="Crie uma senha segura" />
+          </div>
+
+          <button id="btn-register" class="btn-primary" type="button">
+            <span>Cadastrar</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP SECTION -->
+  <div id="app-section" class="app-section hidden">
+    <!-- Navigation Header -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="logo-section">
+          <div class="logo">📚</div>
+          <div>
+            <h1>Book Tracker</h1>
+            <p>Sua Biblioteca Digital</p>
+          </div>
+        </div>
+
         <nav class="app-nav">
-          <a id="nav-list">Listar Livros</a>
-          <a id="nav-add">Adicionar Livro</a>
-          <a id="nav-logout">Logout</a>
+          <button id="nav-list" class="nav-btn active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 3H5a2 2 0 0 0-2 2v4m0 0v8a2 2 0 0 0 2 2h4m0 0h4a2 2 0 0 0 2-2v-4m0 0V5a2 2 0 0 0-2-2h-4"></path>
+            </svg>
+            Livros
+          </button>
+          <button id="nav-add" class="nav-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            Adicionar
+          </button>
+          <button id="nav-logout" class="nav-btn logout">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path>
+            </svg>
+            Sair
+          </button>
         </nav>
-      </header>
+      </div>
+    </header>
 
-      <div class="container">
-        <!-- LISTA -->
-        <section id="section-list" class="panel">
-          <div class="panel-head">
-            <h2>Lista de Livros</h2>
+    <!-- Main Content -->
+    <div class="app-content">
+      <!-- Books Section -->
+      <section id="section-list" class="section-panel">
+        <div class="section-header">
+          <div>
+            <h2>Sua Biblioteca</h2>
+            <p>Gerencie e acompanhe seus livros</p>
+          </div>
 
-            <div class="panel-actions">
+          <div class="section-controls">
+            <div class="search-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              <input id="filterInput" type="text" placeholder="Buscar livro, autor..." />
+            </div>
 
-              <div class="filter-input">
-                <input id="filterInput" type="text" placeholder="Filtrar">
+            <button id="btn-load" class="btn-secondary" title="Atualizar lista">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 0 1 14.85-4.45M23 20v-6h-6"></path>
+              </svg>
+              Atualizar
+            </button>
+          </div>
+        </div>
 
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="filter-icon">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
-                </svg>
-              </div>
+        <ul id="bookList" class="books-grid">
+          <!-- JS insere livros aqui -->
+        </ul>
 
-              <button id="btn-load" class="secondary-btn">
-                Atualizar
-              </button>
+        <div class="pagination-container">
+          <button id="prev" class="btn-pagination">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+            Anterior
+          </button>
+          <span id="page-info" class="page-indicator">Página 1</span>
+          <button id="next" class="btn-pagination">
+            Próximo
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+      </section>
 
+      <!-- Add Book Section -->
+      <section id="section-add" class="section-panel hidden">
+        <div class="section-header">
+          <div>
+            <h2>Adicionar Novo Livro</h2>
+            <p>Expanda sua biblioteca</p>
+          </div>
+        </div>
+
+        <form class="book-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="title">Título *</label>
+              <input id="title" type="text" placeholder="O Senhor dos Anéis" required />
+            </div>
+
+            <div class="form-group">
+              <label for="author">Autor *</label>
+              <input id="author" type="text" placeholder="J.R.R. Tolkien" required />
             </div>
           </div>
 
-          <ul id="bookList" class="book-list">
-            <!-- JS insere os livros aqui -->
-          </ul>
-
-          <div id="pagination" class="pagination">
-            <button id="prev" class="secondary-btn">Anterior</button>
-            <span id="page-info">Página 1</span>
-            <button id="next" class="secondary-btn">Próximo</button>
-          </div>
-        </section>
-
-        <!-- ADICIONAR -->
-        <section id="section-add" class="panel hidden">
-          <h2>Adicionar Livro</h2>
-
-          <div class="form-grid">
-            <div class="field">
-              <label for="title">Título</label>
-              <input id="title" type="text" placeholder="Título do livro" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pages">Páginas *</label>
+              <input id="pages" type="number" placeholder="500" required />
             </div>
 
-            <div class="field">
-              <label for="author">Autor</label>
-              <input id="author" type="text" placeholder="Nome do autor" />
-            </div>
-
-            <div class="field">
-              <label for="pages">Páginas</label>
-              <input id="pages" type="number" placeholder="Quantidade de páginas" />
-            </div>
-
-            <div class="field">
-              <label for="status">Status</label>
-              <select id="status">
+            <div class="form-group">
+              <label for="status">Status *</label>
+              <select id="status" required>
                 <option value="PLANNED">Para ler</option>
                 <option value="READING">Lendo</option>
                 <option value="COMPLETE">Lido</option>
               </select>
             </div>
+          </div>
 
-            <div class="field full">
-              <label for="rating">Nota (opcional)</label>
-              <input id="rating" type="number" step="0.5" placeholder="Ex: 4.5" />
+          <div class="form-group">
+            <label for="rating">Nota (0-5)</label>
+            <div class="rating-input">
+              <input id="rating" type="number" min="0" max="5" step="0.5" placeholder="4.5" />
+              <span class="rating-helper">Deixe em branco se ainda não leu</span>
             </div>
           </div>
 
-          <button id="btn-add" class="primary-btn" type="button">Adicionar</button>
-        </section>
+          <button id="btn-add" class="btn-primary" type="button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            Adicionar Livro
+          </button>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT -->
+  <div id="modalEdit" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Editar Livro</h2>
+        <button class="modal-close" id="modalButtonCancel">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
       </div>
-    </section>
-  </main>
 
-  <!-- MODAL -->
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="modalTitle">Título</label>
+            <input id="modalTitle" type="text" placeholder="Título do livro" />
+          </div>
 
-  <div id="modalEdit" class="overlay hidden">
-    <div class="modal">
-      <h2>Editar livro</h2>
-
-      <div class="form-grid">
-        <div class="field">
-          <label for="title">Título</label>
-          <input id="modalTitle" type="text" placeholder="Título do livro" />
+          <div class="form-group">
+            <label for="modalAuthor">Autor</label>
+            <input id="modalAuthor" type="text" placeholder="Nome do autor" />
+          </div>
         </div>
 
-        <div class="field">
-          <label for="author">Autor</label>
-          <input id="modalAuthor" type="text" placeholder="Nome do autor" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="modalPages">Páginas</label>
+            <input id="modalPages" type="number" placeholder="Quantidade de páginas" />
+          </div>
+
+          <div class="form-group">
+            <label for="modalStatus">Status</label>
+            <select id="modalStatus">
+              <option value="PLANNED">Para ler</option>
+              <option value="READING">Lendo</option>
+              <option value="COMPLETE">Lido</option>
+            </select>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="pages">Páginas</label>
-          <input id="modalPages" type="number" placeholder="Quantidade de páginas" />
+        <div class="form-group">
+          <label for="modalRating">Nota (0-5)</label>
+          <input id="modalRating" type="number" min="0" max="5" step="0.5" placeholder="Ex: 4.5" />
         </div>
+      </div>
 
-        <div class="field">
-          <label for="status">Status</label>
-          <select id="modalStatus">
-            <option value="PLANNED">Para ler</option>
-            <option value="READING">Lendo</option>
-            <option value="COMPLETE">Lido</option>
-          </select>
-        </div>
-
-        <div class="field full">
-          <label for="rating">Nota (opcional)</label>
-          <input id="modalRating" type="number" step="0.5" placeholder="Ex: 4.5" />
-        </div>
-        <div class="div-btn-modal">
-          <button id="modalButton" type="button">Editar</button>
-          <button id="modalButtonCancel" class="btn-modal-cancel" type="button">Cancelar</button>
-        </div>
+      <div class="modal-footer">
+        <button id="modalButton" class="btn-primary" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Salvar Mudanças
+        </button>
+        <button id="modalButtonCancelAlt" class="btn-secondary" type="button">Cancelar</button>
       </div>
     </div>
+  </div>
 
-    <script src="./script.js"></script>
+  <script src="./script.js"></script>
 </body>
 
 </html>

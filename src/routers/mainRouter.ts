@@ -19,7 +19,7 @@ mainRouter.delete("/book/:id", Auth.private, deleteBook);
 
 mainRouter.patch("/book/:id", Auth.private, updateBook)
 
-mainRouter.get("/books/filter", Auth.private, bookFilter)
+mainRouter.get("/book/filter", Auth.private, bookFilter)
 
 
 // AUTH
