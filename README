@@ -15,14 +15,20 @@ API REST para gerenciamento de leitura de livros, permitindo que usuários acomp
 
 ---
 
-## 🛠️ Tecnologias
+## Tech Stack
+- **Backend:** TypeScript, Express.js, Prisma ORM, PostgreSQL
+- **Frontend:** Vanilla JavaScript, CSS3, Responsive Design
+- **Auth:** JWT (JSON Web Tokens)
+- **Testing:** Jest
+- **Tools:** bcrypt, Zod validation
 
-- Node.js
-- Express
-- TypeScript
-- Prisma ORM
-- PostgreSQL
-- Zod
+## Features
+✅ User authentication and authorization
+✅ Complete CRUD operations for books
+✅ Advanced search and filtering
+✅ Pagination
+✅ Modern, responsive UI
+✅ Comprehensive unit tests
 
 ---
 
